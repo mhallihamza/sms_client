@@ -5,7 +5,7 @@ function Treatments() {
     <div className="min-h-screen">
       {/* Header Section */}
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-semibold text-gray-800">Treatments</h1>
+        <h1 className="font-semibold font-poppins text-gray-800">Treatments</h1>
         <button className="bg-orange-500 text-white rounded-lg text-xs py-1.5 px-3 flex items-center gap-2 hover:bg-orange-600 transition">
           <span>Add Treatment</span>
           <AiOutlinePlus />

@@ -1,16 +1,40 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { FaApple } from "react-icons/fa";
-
+import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { loginStart, loginSuccess, loginFailure } from "../redux/authActions";
 function Login() {
+  const { user } = useSelector((state) => state) as any;
   const [isFocused1, setIsFocused1] = useState(false);
   const [isFocused2, setIsFocused2] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-    function handleClick(e:any) {
-      e.preventDefault()
-      alert("Login")
+  const dispatch = useDispatch() as any;
+  const navigate = useNavigate();
+  useEffect(() => {
+    if(user){
+      navigate('/dashboard')
     }
+  },[])
+    async function handleClick(e:any) {
+      e.preventDefault();
+      try {
+        dispatch(loginStart())
+      const  { data: user } = await axios.post('http://localhost:3000/auth/login', {
+        email, password
+      })
+      if(user) {
+        dispatch(loginSuccess(user))
+        navigate('/dashboard')
+
+      }
+      } catch(err) {
+        dispatch(loginFailure(err))
+      }
+    }
+    console.log(user)
   return (
     <div className="flex w-full min-h-screen">
         <div className="w-2/3 bg-slate-400">

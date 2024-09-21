@@ -42,7 +42,7 @@ function Calendar() {
 
   return (
     <div>
-      <h1 className="text-lg mb-3">Calendar</h1>
+      <h1 className="font-poppins font-semibold mt-1 mb-3">Calendar</h1>
       <div className="flex mb-3">
         <div className="w-10"></div>
         <div className="grid grid-cols-5 flex-grow">

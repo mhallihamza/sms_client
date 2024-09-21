@@ -8,18 +8,21 @@ import Customers from "./components/Customers";
 import Payments from "./components/Payments";
 import Services from "./components/Services";
 import Treatments from "./components/Treatments";
+import Dashboard from "./components/Dashboard";
 
 function App() {
 
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
-       <Route path="calender" element={<Calender />}></Route>
-       <Route path="appointments" element={<Appointments />}></Route>
-       <Route path="customers" element={<Customers />}></Route>
-       <Route path="payments" element={<Payments />}></Route>
-       <Route path="services" element={<Services />}></Route>
-       <Route path="treatments" element={<Treatments />}></Route>
+        <Route path="" element={<Dashboard />}></Route>
+        <Route path="dashboard" element={<Dashboard />}></Route>
+        <Route path="calender" element={<Calender />}></Route>
+        <Route path="appointments" element={<Appointments />}></Route>
+        <Route path="customers" element={<Customers />}></Route>
+        <Route path="payments" element={<Payments />}></Route>
+        <Route path="services" element={<Services />}></Route>
+        <Route path="treatments" element={<Treatments />}></Route>
       </Route>
       <Route path="/login" element={<Login />}></Route>
     </Routes>

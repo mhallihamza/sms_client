@@ -1,9 +1,26 @@
+import { useState, useEffect } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 import { HiOutlineTrash } from 'react-icons/hi2';
 import { FiEdit2 } from 'react-icons/fi';
 import { IoIosArrowForward } from "react-icons/io";
+import CustomerForm from "./CustomerForm";
 
 function Customers() {
+  const [showForm, setShowForm] = useState<boolean>(false)
+  useEffect(() => {
+    if (showForm) {
+      // Disable scrolling on the body when the form is shown
+      document.body.style.overflow = 'hidden';
+    } else {
+      // Re-enable scrolling on the body when the form is hidden
+      document.body.style.overflow = 'auto';
+    }
+
+    // Clean up when the component is unmounted or when showForm changes
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [showForm]);
   const fakeData = [
     {
       id: 1,
@@ -88,10 +105,10 @@ function Customers() {
   ];
   return (
     <div>
-      <div className="flex justify-between items-center text-lg">
-        <h1>Customers</h1>
-        <button className="bg-orange-500 text-white rounded-lg text-xs py-1.5 px-3 flex items-center gap-2 hover:bg-orange-600 transition">
-          <span>Add Service</span>
+      <div className="flex justify-between items-center">
+        <h1 className="font-poppins font-semibold">Customers</h1>
+        <button onClick={() => setShowForm(true)} className="bg-orange-500 text-white rounded-lg text-xs py-1.5 px-3 flex items-center gap-2 hover:bg-orange-600 transition">
+          <span>Add Customer</span>
           <AiOutlinePlus />
         </button>
       </div>
@@ -133,6 +150,7 @@ function Customers() {
           </tbody>
         </table>
       </div>
+      <CustomerForm showForm={showForm} setShowForm={setShowForm}/>
     </div>
   )
 }
