@@ -10,24 +10,31 @@ function Appointments() {
         <div className="flex justify-between items-center">
           <h1 className="font-poppins font-semibold">Appointments</h1>
           <button onClick={() => setShowForm(true)} className="bg-orange-500 text-white rounded-lg text-xs py-1.5 px-3 flex items-center gap-2 hover:bg-orange-600 transition">
-            <span>Add Service</span>
+            <span>Add Appointment</span>
             <AiOutlinePlus />
           </button>
         </div>
-        <div className="border border-gray-200 rounded-lg my-4">
+        <div className="my-4">
           <table className="w-full">
             <thead className="text-xs font-medium font-poppins">
               <tr>
-                <th className="font-semibold py-3 pl-3 text-left">ID</th>
-                <th className="font-semibold py-3 pl-3 text-left">DATE</th>
-                <th className="font-semibold py-3 pl-3 text-left">CUSTOMER</th>
-                <th className="font-semibold py-3 pl-3 text-left">STAFF</th>
-                <th className="font-semibold py-3 pl-3 text-left">SERVICE</th>
-                <th className="font-semibold py-3 pl-3 text-left w-28">STATUS</th>
+                <th className='px-2'>
+                  <input type='checkbox'></input>
+                </th>
+                <th className="font-semibold py-3 pl-3 text-left">Id</th>
+                <th className="font-semibold py-3 pl-3 text-left">Date</th>
+                <th className="font-semibold py-3 pl-3 text-left">Customer</th>
+                <th className="font-semibold py-3 pl-3 text-left">Staff</th>
+                <th className="font-semibold py-3 pl-3 text-left">Service</th>
+                <th className="font-semibold py-3 pl-3 text-left w-28">Status</th>
+                <th></th>
               </tr>
             </thead>
             <tbody className="text-xs font-medium font-poppins">
-              <tr>
+              <tr className='bg-white border-b-4 border-[#fbfcfc]'>
+                <td className='px-2'>
+                  <input type='checkbox'></input>
+                </td>
                 <td className="pl-3 py-3">343</td>
                 <td className="pl-3 py-3">Feb 11, 07:00 am</td>
                 <td className="pl-3 py-3">
@@ -49,8 +56,18 @@ function Appointments() {
                 <td className="px-3 py-3">
                   <div className="bg-green-300 text-green-700 rounded-xl text-center">Accepted</div>
                 </td>
+                <td>
+                <button className="text-gray-600 hover:text-gray-900 p-2 rounded-full focus:outline-none">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" className="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM12 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM12 17.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+                  </svg>
+                </button>
+                </td>
               </tr>
-              <tr>
+              <tr className='bg-white border-b-4 border-[#fbfcfc]'>
+                <td className='px-2'>
+                  <input type='checkbox'></input>
+                </td>
                 <td className="pl-3 py-3">344</td>
                 <td className="pl-3 py-3">Feb 11, 08:15 am</td>
                 <td className="pl-3 py-3">
@@ -72,12 +89,17 @@ function Appointments() {
                 <td className="px-3 py-3">
                   <div className="bg-orange-100 text-orange-500 rounded-xl text-center">Pending</div>
                 </td>
+                <button className="text-gray-600 hover:text-gray-900 p-2 rounded-full focus:outline-none">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" className="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM12 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM12 17.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+                  </svg>
+                </button>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
-      <AppointmentForm showForm = {showForm} setShowForm = {setShowForm}/>
+      <AppointmentForm showForm={showForm} setShowForm={setShowForm} />
     </div>
   )
 }

@@ -5,55 +5,72 @@ import { BiSolidDollarCircle } from "react-icons/bi";
 import { FaUserGroup } from "react-icons/fa6";
 import { MdMiscellaneousServices } from "react-icons/md";
 import { NavLink, Outlet } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../redux/authActions";
 import UpcomingAppointments from "./UpcomingAppointments";
+import { useNavigate } from "react-router-dom";
+import { FaUser } from "react-icons/fa";
 
 function Sidebar() {
+  const user = useSelector((state:any) => state.user) as any;
+  const navigate = useNavigate();
+  const dispatch = useDispatch() as any;
+  const handleLogOut = () => {
+    dispatch(logout());
+    navigate('/login');
+  }
   return (
     <div className="flex min-h-screen gap-3 px-3">
       <div className="h-screen sticky z-20 top-0 inset-x-0 w-[15%] py-3">
-      <div className="bg-[#f6f8f8] overflow-auto font-medium h-full text-sm border-gray-200 border rounded-lg">
+      <div className="bg-[#fbfcfc] overflow-auto font-medium h-full text-sm border-gray-200 border rounded-lg">
        <img className="h-20 w-20 ml-3 mb-3" src="/images/logo.png"></img>
        <ul>
         <li>
-         <NavLink to="/dashboard" className={({isActive}) => isActive ? "bg-[#fbece6] flex items-center gap-4 py-2 pl-6 hover:bg-[#ff5b1a] border-r-2 border-[#ff5b1a]" : "flex items-center hover:bg-[#ff5b1a] gap-4 py-2 pl-6"}>
+         <NavLink to="/dashboard" className={({isActive}) => isActive ? "bg-[#fbece6] flex items-center gap-4 py-2 pl-6 hover:bg-orange-500 border-r-2 border-orange-500" : "flex items-center hover:bg-orange-500 gap-4 py-2 pl-6"}>
           <TbLayoutDashboardFilled  className="h-5 w-5"/>
           <span>Dashboard</span>
          </NavLink>
         </li>
         <li>
-         <NavLink to="/calender" className={({isActive}) => isActive ? "bg-[#fbece6] hover:bg-[#ff5b1a] flex items-center gap-3 py-2 pl-5 border-r-2 border-[#ff5b1a]" : "flex items-center hover:bg-[#ff5b1a] gap-3 py-2 pl-5"}>
+         <NavLink to="/calender" className={({isActive}) => isActive ? "bg-[#fbece6] hover:bg-orange-500 flex items-center gap-3 py-2 pl-5 border-r-2 border-orange-500" : "flex items-center hover:bg-orange-500 gap-3 py-2 pl-5"}>
           <img className="h-7 w-7" src="/images/calendar.svg"></img>
           <span>Calender</span>
          </NavLink>
         </li>
         <li>
-         <NavLink to="/appointments" className={({isActive}) => isActive ? "bg-[#fbece6] flex items-center hover:bg-[#ff5b1a] gap-3 py-2 pl-5 border-r-2 border-[#ff5b1a]" : "flex items-center hover:bg-[#ff5b1a] gap-3 py-2 pl-5"}>
+         <NavLink to="/appointments" className={({isActive}) => isActive ? "bg-[#fbece6] flex items-center hover:bg-orange-500 gap-3 py-2 pl-5 border-r-2 border-orange-500" : "flex items-center hover:bg-orange-500 gap-3 py-2 pl-5"}>
           <img className="h-7 w-7" src="/images/appointment.svg"></img>
           <span>Appointments</span>
          </NavLink>
         </li>
         <li>
-         <NavLink to="/payments" className={({isActive}) => isActive ? "bg-[#fbece6] flex items-center hover:bg-[#ff5b1a] gap-4 py-2 pl-6 border-r-2 border-[#ff5b1a]" : "flex items-center hover:bg-[#ff5b1a] gap-4 py-2 pl-6"}>
+         <NavLink to="/payments" className={({isActive}) => isActive ? "bg-[#fbece6] flex items-center hover:bg-orange-500 gap-4 py-2 pl-6 border-r-2 border-orange-500" : "flex items-center hover:bg-orange-500 gap-4 py-2 pl-6"}>
           <BiSolidDollarCircle className="h-5 w-5"/>
           <span>Payments</span>
          </NavLink>
         </li>
         <li>
-         <NavLink to="/customers" className={({isActive}) => isActive ? "bg-[#fbece6] flex items-center  hover:bg-[#ff5b1a] gap-4 py-2 pl-6 border-r-2 border-[#ff5b1a]" : "flex items-center hover:bg-[#ff5b1a] gap-4 py-2 pl-6"}>
+         <NavLink to="/customers" className={({isActive}) => isActive ? "bg-[#fbece6] flex items-center  hover:bg-orange-500 gap-4 py-2 pl-6 border-r-2 border-orange-500" : "flex items-center hover:bg-orange-500 gap-4 py-2 pl-6"}>
           <FaUserGroup className="h-5 w-5"/>
           <span>Customers</span>
          </NavLink>
         </li>
         <li>
-        <NavLink to="/services" className={({isActive}) => isActive ? "bg-[#fbece6] flex items-center gap-3 hover:bg-[#ff5b1a] py-2 pl-6 border-r-2 border-[#ff5b1a]" : "flex items-center hover:bg-[#ff5b1a] gap-3 py-2 pl-6"}>
+        <NavLink to="/services" className={({isActive}) => isActive ? "bg-[#fbece6] flex items-center gap-3 hover:bg-orange-500 py-2 pl-6 border-r-2 orange-500" : "flex items-center hover:bg-orange-500 gap-3 py-2 pl-6"}>
           <MdMiscellaneousServices className="h-6 w-6"/>
           <span>Services</span>
         </NavLink>
         </li>
         <li>
-        <NavLink to="/treatments" className={({isActive}) => isActive ? "bg-[#fbece6] flex items-center gap-4 hover:bg-[#ff5b1a] py-2 pl-6 border-r-2 border-[#ff5b1a]" : "flex items-center hover:bg-[#ff5b1a] gap-4 py-2 pl-6"}>
+        <NavLink to="/treatments" className={({isActive}) => isActive ? "bg-[#fbece6] flex items-center gap-4 hover:bg-orange-500 py-2 pl-6 border-r-2 border-orange-500" : "flex items-center hover:bg-orange-500 gap-4 py-2 pl-6"}>
           <img className="h-5 w-5" src="/images/treatment.svg"></img>
           <span>Treatments</span>
+        </NavLink>
+        </li>
+        <li>
+        <NavLink to="/staff" className={({isActive}) => isActive ? "bg-[#fbece6] flex items-center gap-4 hover:bg-orange-500 py-2 pl-7 border-r-2 border-orange-500" : "flex items-center hover:bg-orange-500 gap-4 py-2 pl-7"}>
+          <FaUser className="h-[18px] w-[18px]"/>
+          <span>Staff</span>
         </NavLink>
         </li>
         <li className="flex items-center gap-4 py-2 pl-7">
@@ -64,9 +81,11 @@ function Sidebar() {
           <IoMdSettings className="h-5 w-5"/>
           <span>Settings</span>
         </li>
-        <li className="flex items-center gap-4 py-2 pl-7">
-          <img className="h-5 w-5" src="/images/logout.svg"></img>
-          <span>Log Out</span>
+        <li>
+          <button className="flex items-center gap-4 hover:bg-orange-500 w-full py-2 pl-[25px]" onClick={handleLogOut}>
+           <img className="h-5 w-5" src="/images/logout.svg"></img>
+           <span>Log Out</span>
+          </button>
         </li>
        </ul>
        <div className="flex flex-col gap-3 mt-32 mb-4 text-white mx-5">
@@ -109,15 +128,15 @@ function Sidebar() {
              <IoIosNotifications className="h-5 w-5"/>
             </button>
             <div className="border h-full border-gray-200"></div>
-            <p>Alex Sharapova</p>
-            <img className="h-8 w-8 rounded-full" src="https://sb.kaleidousercontent.com/67418/1920x1281/0e9f02a048/christian-buehner-ditylc26zvi-unsplash.jpg"></img>
+            <p>{`${user.firstName[0].toUpperCase() + user.firstName.slice(1).toLowerCase()} ${user.lastName[0].toUpperCase() + user.lastName.slice(1).toLowerCase()}`}</p>
+            <img className="h-8 w-8 rounded-full" src={user.profilePicture}></img>
           </div>
         </div>
         <div className="flex flex-1 gap-3 pb-3">
-          <div className="bg-[#f6f8f8] relative px-4 py-4 w-[75%] rounded-lg font-medium border-gray-200 border">
+          <div className=" bg-[#fbfcfc] relative px-4 py-4 w-[75%] rounded-lg font-medium border-gray-200 border">
             <Outlet />
           </div>
-          <div className="bg-[#f6f8f8] border border-gray-200 w-[25%] rounded-lg p-4">
+          <div className="bg-[#fbfcfc] border border-gray-200 w-[25%] rounded-lg p-4">
             <UpcomingAppointments />
           </div>
         </div>

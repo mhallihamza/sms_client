@@ -9,6 +9,7 @@ import Payments from "./components/Payments";
 import Services from "./components/Services";
 import Treatments from "./components/Treatments";
 import Dashboard from "./components/Dashboard";
+import Staff from "./components/Staff";
 
 function App() {
 
@@ -23,6 +24,7 @@ function App() {
         <Route path="payments" element={<Payments />}></Route>
         <Route path="services" element={<Services />}></Route>
         <Route path="treatments" element={<Treatments />}></Route>
+        <Route path="staff" element={<Staff />}></Route>
       </Route>
       <Route path="/login" element={<Login />}></Route>
     </Routes>

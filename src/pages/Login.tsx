@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { FaApple } from "react-icons/fa";
 import axios from "axios";
@@ -6,11 +6,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { loginStart, loginSuccess, loginFailure } from "../redux/authActions";
 function Login() {
-  const { user } = useSelector((state) => state) as any;
+  const user = useSelector((state:any) => state.user) as any;
   const [isFocused1, setIsFocused1] = useState(false);
   const [isFocused2, setIsFocused2] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const passwordRef = useRef<HTMLInputElement | null>(null);
   const dispatch = useDispatch() as any;
   const navigate = useNavigate();
   useEffect(() => {
@@ -20,6 +21,8 @@ function Login() {
   },[])
     async function handleClick(e:any) {
       e.preventDefault();
+      console.log(email);
+      console.log(password);
       try {
         dispatch(loginStart())
       const  { data: user } = await axios.post('http://localhost:3000/auth/login', {
@@ -34,7 +37,12 @@ function Login() {
         dispatch(loginFailure(err))
       }
     }
-    console.log(user)
+    const onLastInputKey = (e:any) => {
+      if(e.key === "Enter"){
+         passwordRef.current?.blur()
+         handleClick(e);
+      }
+    }
   return (
     <div className="flex w-full min-h-screen">
         <div className="w-2/3 bg-slate-400">
@@ -51,7 +59,7 @@ function Login() {
                 <label htmlFor="email" className={`absolute text-sm top-1 left-2 ${isFocused1 ? "text-orange-600" : email.length ? "text-gray-500" : "hidden"} `}>E-mail / Phone number *</label>
               </div>
               <div className="relative bg-white rounded-lg h-14 mb-4 w-full shadow-sm">
-                <input placeholder="Password *" type="password" id="password" autoComplete="off" required onBlur={() => setIsFocused2(false)} onFocus={() => setIsFocused2(true)} value={password} onChange={(e) => setPassword(e.target.value)}  className={`w-full px-2 ${isFocused2 || password ? "placeholder-transparent absolute bottom-2" : "h-full placeholder-gray-500"} outline-none rounded-lg`}></input>
+                <input ref={passwordRef} onKeyDown={onLastInputKey} placeholder="Password *" type="password" id="password" autoComplete="off" required onBlur={() => setIsFocused2(false)} onFocus={() => setIsFocused2(true)} value={password} onChange={(e) => setPassword(e.target.value)}  className={`w-full px-2 ${isFocused2 || password ? "placeholder-transparent absolute bottom-2" : "h-full placeholder-gray-500"} outline-none rounded-lg`}></input>
                 <label htmlFor="password" className={`absolute text-sm top-1 left-2 ${isFocused2 ? "text-orange-600" : password.length ? "text-gray-500" : "hidden"}`}>Password *</label>
               </div>
               <div className="flex items-center gap-4 my-6">
