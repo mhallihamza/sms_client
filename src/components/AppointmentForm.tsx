@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
+import { useSelector } from 'react-redux';
 import { IoIosArrowDown } from "react-icons/io";
 import dayjs, { Dayjs } from 'dayjs';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -7,6 +8,7 @@ import { FaAsterisk } from "react-icons/fa6";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import useFetch from '../hooks/useFetch';
 const theme = createTheme({
   components: {
     // Customize the DatePicker's toolbar
@@ -36,6 +38,7 @@ const theme = createTheme({
   },
 });
 interface ICustomer {
+  customerId: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -48,43 +51,41 @@ interface ICustomer {
   updatedAt: string
 
 }
-const AppointmentForm = ({ showForm, setShowForm }: { showForm: boolean, setShowForm: React.Dispatch<React.SetStateAction<boolean>> }) => {
+const AppointmentForm = ({ showForm, setShowForm, refetch }: { showForm: boolean, setShowForm: React.Dispatch<React.SetStateAction<boolean>>, refetch: any }) => {
   const [appointment, setAppointment] = useState({
-    clientId: '',
+    customerId: '',
     staffId: '',
     appointmentDate: '',
-    appointmentTime: '',
+    startTime: '',
     serviceId: '',
     notes: '',
     status: 'pending',
-    price: '',
-    paymentMethod: '',
-    paymentCompleted: false,
+    userId: ''
   });
-  const [customers, setCustomers] = useState<ICustomer[]>([]);
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const { data }: { data:ICustomer[] } = await axios('http://localhost:3000/customers/87c0e3a7-ad94-470b-bc89-e65b9ff34c7e');
-        setCustomers(data);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    fetchData();
-  }, []);
-  console.log(customers);
+  const user = useSelector((state:any) => state.user) as any;
+  const { data: customers }: {data : ICustomer[]} = useFetch(`http://localhost:3000/customers/${user.userId}`)
+  const { data: services }: {data : any[]} = useFetch(`http://localhost:3000/services/${user.userId}`)
+  const { data: staff }: {data : any[]} = useFetch(`http://localhost:3000/staff/${user.userId}`)
+  const { data: treatments }: {data : any[]} = useFetch(`http://localhost:3000/treatments/${user.userId}`)
   const [value, setValue] = useState<Dayjs | null>(dayjs());
   const handleChange = (e: any) => {
     setAppointment(prev => ({
       ...prev, [e.target.name]: e.target.value
     }))
   }
-  const handleClick = () => {
-    console.log(value);
-    if(value) appointment.appointmentDate = value.toISOString();
+  const handleClick = async () => {
     console.log(appointment)
+    if(value) appointment.appointmentDate = value.toISOString();
+    try {
+        appointment
+        const result = await axios.post("http://localhost:3000/appointments",{
+          ...appointment, userId: user.userId
+        })
+        if(result) refetch()
+     }
+     catch(err){
+      console.log(err)
+     }
   }
 
   return (
@@ -109,17 +110,33 @@ const AppointmentForm = ({ showForm, setShowForm }: { showForm: boolean, setShow
                   <form className='font-normal font-poppins'>
                     <div className='grid grid-cols-2 gap-x-3 gap-y-6'>
                       <div className="col-span-2 flex flex-col gap-1">
-                        <label className='inline-flex items-center' htmlFor='clientId'>Customer<span><FaAsterisk className='ml-1 h-2 w-2 text-red-500 mb-1' /></span></label>
+                        <label className='inline-flex items-center' htmlFor='customerId'>Customer<span><FaAsterisk className='ml-1 h-2 w-2 text-red-500 mb-1' /></span></label>
                         <div className="relative">
                           <select
                             onChange={handleChange} defaultValue='' required
-                            name='clientId' id='clientId'
+                            name='customerId' id='customerId'
                             className="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-gray-300 rounded pl-3 pr-8 py-2.5 transition duration-300 ease focus:outline-none shadow-sm appearance-none cursor-pointer">
                             <option hidden>Choose a customer</option>
                             {
                               customers && customers?.map((el:any) => (
                                 <option key={el.customerId} value={el.customerId}>{`${el.firstName} ${el.lastName}`}</option>
                               ))
+                            }
+                          </select>
+                          <IoIosArrowDown className='h-4 w-4 ml-1 absolute top-3.5 right-2.5 text-slate-700'/>
+                        </div>
+                      </div>
+                      <div className='col-span-2 flex flex-col gap-1'>
+                        <label className='inline-flex items-center' htmlFor='staffId'>Staff<span><FaAsterisk className='ml-1 h-2 w-2 text-red-500 mb-1' /></span></label>
+                        <div className="relative">
+                          <select
+                            onChange={handleChange} defaultValue='' required
+                            name='staffId' id='staffId'
+                            className="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-gray-300 rounded pl-3 pr-8 py-2.5 transition duration-300 ease focus:outline-none shadow-sm appearance-none cursor-pointer">
+                            <option hidden>Choose a staff</option>
+                            { staff && staff.map(el => (
+                              <option key={el.staffId} value={el.staffId}>{el.firstName + ' ' + el.lastName}</option>
+                            ))
                             }
                           </select>
                           <IoIosArrowDown className='h-4 w-4 ml-1 absolute top-3.5 right-2.5 text-slate-700'/>
@@ -133,26 +150,26 @@ const AppointmentForm = ({ showForm, setShowForm }: { showForm: boolean, setShow
                             name='serviceId' id='serviceId'
                             className="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-gray-300 rounded pl-3 pr-8 py-2.5 transition duration-300 ease focus:outline-none shadow-sm appearance-none cursor-pointer">
                             <option hidden>Choose a service</option>
-                            <option value="brazil">Brazil</option>
-                            <option value="bucharest">Bucharest</option>
-                            <option value="london">London</option>
-                            <option value="washington">Washington</option>
+                            { services && services.map(service => (
+                              <option key={service.serviceId} value={service.serviceId}>{service.name}</option>
+                            ))
+                            }
                           </select>
                           <IoIosArrowDown className='h-4 w-4 ml-1 absolute top-3.5 right-2.5 text-slate-700'/>
                         </div>
                       </div>
                       <div className='flex flex-col gap-1'>
-                        <label className='inline-flex items-center' htmlFor='staffId'>Staff<span><FaAsterisk className='ml-1 h-2 w-2 text-red-500 mb-1' /></span></label>
+                        <label className='inline-flex items-center' htmlFor='treatmentId'>Treatment<span><FaAsterisk className='ml-1 h-2 w-2 text-red-500 mb-1' /></span></label>
                         <div className="relative">
                           <select
-                            onChange={handleChange} defaultValue='' required
-                            name='staffId' id='staffId'
+                            onChange={handleChange} defaultValue=''  required
+                            name='treatmentId' id='treatmentId'
                             className="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-gray-300 rounded pl-3 pr-8 py-2.5 transition duration-300 ease focus:outline-none shadow-sm appearance-none cursor-pointer">
-                            <option hidden>Choose a staff</option>
-                            <option value="brazil">Brazil</option>
-                            <option value="bucharest">Bucharest</option>
-                            <option value="london">London</option>
-                            <option value="washington">Washington</option>
+                            <option hidden>Choose a treatment</option>
+                            { treatments && treatments.filter(el => el.serviceId === appointment.serviceId).map(treatment => (
+                              <option key={treatment.treatmentId} value={treatment.treatmentId}>{treatment.name}</option>
+                            ))
+                            }
                           </select>
                           <IoIosArrowDown className='h-4 w-4 ml-1 absolute top-3.5 right-2.5 text-slate-700'/>
                         </div>
@@ -170,8 +187,24 @@ const AppointmentForm = ({ showForm, setShowForm }: { showForm: boolean, setShow
                         </ThemeProvider>
                       </div>
                       <div className="flex flex-col gap-1">
-                        <label className='inline-flex items-center' htmlFor='appointmentTime'>Time<span><FaAsterisk className='ml-1 h-2 w-2 text-red-500 mb-1' /></span></label>
-                        <input required name='appointmentTime' id='appointmentTime' value={appointment.appointmentTime} onChange={handleChange} type='time' className='border border-gray-300 focus:outline-none rounded-[4px] py-2 px-2'></input>
+                        <label className='inline-flex items-center' htmlFor='startTime'>Time<span><FaAsterisk className='ml-1 h-2 w-2 text-red-500 mb-1' /></span></label>
+                        <input required name='startTime' id='startTime' value={appointment.startTime} onChange={handleChange} type='time' className='border border-gray-300 focus:outline-none rounded-[4px] py-2 px-2'></input>
+                      </div>
+                      <div className='col-span-2 flex flex-col gap-1'>
+                        <label className='inline-flex items-center' htmlFor='status'>Status<span><FaAsterisk className='ml-1 h-2 w-2 text-red-500 mb-1' /></span></label>
+                        <div className="relative">
+                          <select
+                            onChange={handleChange} defaultValue=''  required
+                            name='status' id='status'
+                            className="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-gray-300 rounded pl-3 pr-8 py-2.5 transition duration-300 ease focus:outline-none shadow-sm appearance-none cursor-pointer">
+                            <option hidden>Status</option>
+                            <option value='pending'>pending</option>
+                            <option value='confirmed'>confirmed</option>
+                            <option value='completed'>completed</option>
+                            <option value='canceled'>canceled</option>
+                          </select>
+                          <IoIosArrowDown className='h-4 w-4 ml-1 absolute top-3.5 right-2.5 text-slate-700'/>
+                        </div>
                       </div>
                       <div className="col-span-2 flex flex-col gap-1">
                         <label htmlFor='notes'>Note</label>

@@ -10,6 +10,7 @@ import Services from "./components/Services";
 import Treatments from "./components/Treatments";
 import Dashboard from "./components/Dashboard";
 import Staff from "./components/Staff";
+import Settings from "./components/Settings";
 
 function App() {
 
@@ -25,10 +26,11 @@ function App() {
         <Route path="services" element={<Services />}></Route>
         <Route path="treatments" element={<Treatments />}></Route>
         <Route path="staff" element={<Staff />}></Route>
+        <Route path="settings" element={<Settings />}></Route>
       </Route>
       <Route path="/login" element={<Login />}></Route>
     </Routes>
-  )
+  );
 }
 
 export default App

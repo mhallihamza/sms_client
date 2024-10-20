@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import axios from 'axios';
+import { useSelector } from 'react-redux';
 import { IoIosArrowDown } from "react-icons/io";
 import { FaAsterisk } from "react-icons/fa6";
 interface ICustomer {
@@ -10,9 +12,10 @@ interface ICustomer {
   profilePicture?: string;
   address?: string;
   isLoyalCustomer: boolean;
-  notes?: string
+  userId: string;
+  notes?: string;
 }
-const CustomerForm = ({ showForm, setShowForm }: { showForm: boolean, setShowForm: React.Dispatch<React.SetStateAction<boolean>> }) => {
+const CustomerForm = ({ showForm, setShowForm, refetch }: { showForm: boolean, setShowForm: React.Dispatch<React.SetStateAction<boolean>>, refetch: any }) => {
   const [customer, setCustomer] = useState<ICustomer>({
     firstName: '',
     lastName: '',
@@ -22,14 +25,16 @@ const CustomerForm = ({ showForm, setShowForm }: { showForm: boolean, setShowFor
     gender: 'Other',
     address: '',
     isLoyalCustomer: false,
-    notes: ''
+    notes: '',
+    userId: ''
   });
   const [file, setFile] = useState<any>(null);
+  const user = useSelector((state:any) => state.user) as any;
   const [formValid, setFormValid] = useState(false);
   const checkFormValidity = () => {
-    const { firstName, lastName, email, phoneNumber, address } = customer;
+    const { firstName, lastName, email, phoneNumber } = customer;
     // Check if all required fields are filled
-    if (firstName && lastName && email && phoneNumber && address && file) {
+    if (firstName && lastName && email && phoneNumber ) {
       setFormValid(true);
     } else {
       setFormValid(false);
@@ -49,8 +54,39 @@ const CustomerForm = ({ showForm, setShowForm }: { showForm: boolean, setShowFor
   }
    checkFormValidity();
   }
-  const handleClick = () => {
-    console.log(customer)
+  const handleClick = async () => {
+     
+     try {
+
+       if(file) {
+        const data = new FormData();
+        data.append("file",file)
+        data.append("upload_preset","upload")
+        const uploadRes = await axios.post("https://api.cloudinary.com/v1_1/djlbs3tzf/image/upload",data);
+        
+        const {url} = uploadRes.data;
+
+        customer.profilePicture =  url;
+       }
+
+        const result = await axios.post("http://localhost:3000/customers",{
+          firstName: customer.firstName,
+          lastName: customer.lastName,
+          email: customer.email,
+          phoneNumber:  customer.phoneNumber,
+          address: customer.address || null,
+          profilePicture: customer.profilePicture || null,
+          isLoyalCustomer: customer.isLoyalCustomer,
+          gender: customer.gender,
+          notes: customer.notes || null,
+          userId: user.userId
+        })
+        if(result) refetch()
+        console.log(result);
+     }
+     catch(err){
+      console.log(err)
+     }
   }
 
   return (
