@@ -1,9 +1,13 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import { IoCheckboxOutline } from "react-icons/io5";
+import { AiOutlineDelete } from "react-icons/ai";
+import ItemWithMenu from "./ItemWithMenu";
 import { AiOutlinePlus } from "react-icons/ai";
 import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
 import StaffForm from "./StaffForm";
 import useFetch from "../hooks/useFetch";
+import axios from "axios";
 export interface IStaff {
     staffId: string;
     firstName: string;
@@ -21,10 +25,17 @@ export interface IStaff {
 function Staff() {
   const [showForm, setShowForm] = useState<boolean>(false);
   const user = useSelector((state:any) => state.user) as any
+  const [successMessage, setSuccessMessage] = useState("");
+  const [selectedStaff, setSelectedStaff] = useState<any>([]);
+  const [selectAll, setSelectAll] = useState<boolean>(false);
+  const [isMenuOpen, setIsMenuOpen] = useState<any>(false);
+  const [activeItemId, setActiveItemId] = useState<any>(null);
   const [filterAppointments, setFilterAppointments] = useState<any>([]);
   const numbers = 10;
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const {data, refetch}: {data: IStaff[], refetch : any} = useFetch(`http://localhost:3000/staff/${user.userId}`);
+  const { data, refetch }: { data: IStaff[]; refetch: any } = useFetch(
+    `http://localhost:3000/staff/${user.userId}`
+  );
   console.log(data);
   useEffect(() => {
     if (showForm) {
@@ -53,6 +64,48 @@ function Staff() {
     setCurrentPage((prev) => (prev += 1));
     console.log(currentPage);
   };
+  const toggleMenu = (id: string) => {
+    setActiveItemId(id);
+    setIsMenuOpen((prev: any) => !prev);
+  };
+  const handleCheckboxChange = (event: any) => {
+    const { value, checked } = event.target;
+
+    if (checked) {
+      // Add to the selectedPayments array if checked
+      setSelectedStaff([...selectedStaff, value]);
+    } else {
+      // Remove from the selectedPayments array if unchecked
+      setSelectedStaff(
+        selectedStaff.filter((item: any) => item !== value)
+      );
+    }
+
+    console.log(selectedStaff);
+  };
+  const handleSelectAllChange = (event: any) => {
+    const { checked } = event.target;
+    setSelectAll(checked);
+
+    if (checked) {
+      // If "Select All" is checked, add all payment types to selectedPayments
+      setSelectedStaff(data.map((el) => el.staffId));
+    } else {
+      // If "Select All" is unchecked, clear all selected payments
+      setSelectedStaff([]);
+    }
+  };
+  const handleDelete = async (id: string) => {
+    const result = await axios.delete(`http://localhost:3000/staff/${id}`);
+    if (result.data) {
+      setIsMenuOpen((prev: any) => !prev);
+      refetch();
+      setSuccessMessage("Staff successfully deleted!");
+    }
+    setTimeout(() => {
+      setSuccessMessage("");
+    }, 3000);
+  };
   return (
     <div>
       <div className="flex justify-between items-center">
@@ -65,18 +118,28 @@ function Staff() {
           <AiOutlinePlus />
         </button>
       </div>
+      {successMessage && (
+        <div className="bg-green-500 text-white py-2 px-4 rounded my-2">
+          {successMessage}
+        </div>
+      )}
       <div className="mt-3 font-medium text-sm">
         <button className="flex items-center bg-[#f6f8f8] border-gray-200 border px-5 py-1 rounded">
           <span>Filter</span>
           <IoIosArrowForward />
         </button>
       </div>
-      <div className="my-4">
+      <div className="my-4 relative">
         <table className="w-full">
           <thead className="text-xs font-medium font-poppins">
             <tr>
               <th className="px-2">
-                <input className="h-3 w-3" type="checkbox"></input>
+                <input
+                  className="h-3 w-3"
+                  checked={selectAll}
+                  type="checkbox"
+                  onChange={handleSelectAllChange}
+                ></input>
               </th>
               <th className="font-semibold py-3 pl-3 text-left">Photo</th>
               <th className="font-semibold py-3 pl-3 text-left">First Name</th>
@@ -91,9 +154,22 @@ function Staff() {
           <tbody className="text-xs font-medium font-poppins bg-white">
             {data &&
               data.map((el) => (
-                <tr key={el.staffId} className="border-b-4 border-[#fbfcfc]">
+                <tr
+                  key={el.staffId}
+                  className={`${
+                    selectedStaff.includes(el.staffId)
+                      ? "bg-slate-100"
+                      : "bg-white"
+                  } border-b-4 border-[#fbfcfc]`}
+                >
                   <td className="text-center">
-                    <input className="h-3 w-3 px-2" type="checkbox"></input>
+                    <input
+                      className="h-3 w-3 px-2"
+                      type="checkbox"
+                      value={el.staffId}
+                      checked={selectedStaff.includes(el.staffId)}
+                      onChange={handleCheckboxChange}
+                    ></input>
                   </td>
                   <td className="pl-3 py-3">
                     <img
@@ -115,8 +191,11 @@ function Staff() {
                       {el.isAvailable ? "Available" : "Unavailable"}
                     </div>
                   </td>
-                  <td>
-                    <button className="text-gray-600 hover:text-gray-900 p-2 rounded-full focus:outline-none">
+                  <td className="relative">
+                    <button
+                      onClick={() => toggleMenu(el.staffId)}
+                      className="text-gray-600 hover:text-gray-900 p-2 rounded-full focus:outline-none"
+                    >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
@@ -132,11 +211,31 @@ function Staff() {
                         />
                       </svg>
                     </button>
+                    {isMenuOpen && el.staffId === activeItemId && (
+                      <div className="absolute right-6 z-50">
+                        <ItemWithMenu
+                          itemId={el.staffId}
+                          handleDelete={(id: any) => handleDelete(id)}
+                        />
+                      </div>
+                    )}
                   </td>
                 </tr>
               ))}
           </tbody>
         </table>
+        {selectedStaff.length > 0 && (
+          <div className="rounded-lg bg-white font-poppins text-sm absolute right-1/2 bottom-1 translate-x-1/2 border px-2 py-1 flex gap-2">
+            <div className="flex border-r pr-5 py-1 items-center gap-1">
+              <IoCheckboxOutline className="h-5 w-5 text-orange-500" />
+              <p>{`${selectedStaff.length} Items`}</p>
+            </div>
+            <button className="hover:bg-gray-200 flex gap-1 items-center rounded-md px-2">
+              <AiOutlineDelete className="h-4 w-4" />
+              <span>Remove</span>
+            </button>
+          </div>
+        )}
       </div>
       <div className="flex justify-between font-poppins text-sm">
         <button

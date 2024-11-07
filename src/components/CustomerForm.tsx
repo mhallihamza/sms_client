@@ -69,18 +69,18 @@ const CustomerForm = ({ showForm, setShowForm, refetch }: { showForm: boolean, s
         customer.profilePicture =  url;
        }
 
-        const result = await axios.post("http://localhost:3000/customers",{
+        const result = await axios.post("http://localhost:3000/customers", {
           firstName: customer.firstName,
           lastName: customer.lastName,
           email: customer.email,
-          phoneNumber:  customer.phoneNumber,
+          phoneNumber: customer.phoneNumber,
           address: customer.address || null,
           profilePicture: customer.profilePicture || null,
           isLoyalCustomer: customer.isLoyalCustomer,
           gender: customer.gender,
           notes: customer.notes || null,
-          userId: user.userId
-        })
+          userId: user.userId,
+        });
         if(result) refetch()
         console.log(result);
      }

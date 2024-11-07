@@ -49,7 +49,10 @@ const ServiceForm = ({ showForm, setShowForm, refetch }: { showForm: boolean, se
         service.image =  url;
         service.userId = user.userId;
 
-        const result = await axios.post("http://localhost:3000/services",service)
+        const result = await axios.post(
+          "http://localhost:3000/services",
+          service
+        );
         if(result) refetch()
         console.log(result);
      }

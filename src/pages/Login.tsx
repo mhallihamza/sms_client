@@ -25,9 +25,13 @@ function Login() {
       console.log(password);
       try {
         dispatch(loginStart())
-      const  { data: user } = await axios.post('http://localhost:3000/auth/login', {
-        email, password
-      })
+      const { data: user } = await axios.post(
+        "http://localhost:3000/auth/login",
+        {
+          email,
+          password,
+        }
+      );
       if(user) {
         dispatch(loginSuccess(user))
         navigate('/dashboard')

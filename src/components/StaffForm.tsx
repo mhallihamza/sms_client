@@ -57,7 +57,10 @@ const StaffForm = ({ showForm, setShowForm, refetch }: { showForm: boolean, setS
         employee.profilePicture =  url;
         employee.userId = user.userId;
 
-        const result = await axios.post("http://localhost:3000/staff",employee)
+        const result = await axios.post(
+          "http://localhost:3000/staff",
+          employee
+        );
         if(result) refetch()
         console.log(result);
      }

@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
+import axios from "axios";
 import { useSelector } from "react-redux";
+import { IoCheckboxOutline } from "react-icons/io5";
+import { AiOutlineDelete } from "react-icons/ai";
 import ItemWithMenu from "./ItemWithMenu";
 import useFetch from "../hooks/useFetch";
 import { AiOutlinePlus } from "react-icons/ai";
@@ -22,12 +25,17 @@ interface ICustomer {
 function Customers() {
   const [showForm, setShowForm] = useState<boolean>(false);
   const user = useSelector((state:any) => state.user);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [selectedCustomers, setSelectedCustomers] = useState<any>([]);
+  const [selectAll, setSelectAll] = useState<boolean>(false);
   const [isMenuOpen, setIsMenuOpen] = useState<any>(false);
   const [activeItemId, setActiveItemId] = useState<any>(null);
   const [filterAppointments, setFilterAppointments] = useState<any>([]);
   const numbers = 10;
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const {data,refetch}: {data: ICustomer[], refetch: any} = useFetch(`http://localhost:3000/customers/${user.userId}`)
+  const { data, refetch }: { data: ICustomer[]; refetch: any } = useFetch(
+    `http://localhost:3000/customers/${user.userId}`
+  );
   useEffect(() => {
 
     if (showForm) {
@@ -60,6 +68,44 @@ function Customers() {
    setActiveItemId(id);
    setIsMenuOpen((prev:any) => !prev)
   }
+  const handleCheckboxChange = (event: any) => {
+    const { value, checked } = event.target;
+
+    if (checked) {
+      // Add to the selectedPayments array if checked
+      setSelectedCustomers([...selectedCustomers, value]);
+    } else {
+      // Remove from the selectedPayments array if unchecked
+      setSelectedCustomers(
+        selectedCustomers.filter((item: any) => item !== value)
+      );
+    }
+
+    console.log(selectedCustomers);
+  };
+  const handleSelectAllChange = (event: any) => {
+    const { checked } = event.target;
+    setSelectAll(checked);
+
+    if (checked) {
+      // If "Select All" is checked, add all payment types to selectedPayments
+      setSelectedCustomers(data.map((el) => el.customerId));
+    } else {
+      // If "Select All" is unchecked, clear all selected payments
+      setSelectedCustomers([]);
+    }
+  };
+  const handleDelete = async (id:string) => {
+    const result = await axios.delete(`http://localhost:3000/customers/${id}`);
+    if(result.data) {
+      setIsMenuOpen((prev: any) => !prev);
+      refetch();
+      setSuccessMessage("Customer successfully deleted!");
+    }
+    setTimeout(() => {
+      setSuccessMessage("");
+    }, 3000);
+  }
   return (
     <div>
       <div className="flex justify-between items-center">
@@ -72,18 +118,28 @@ function Customers() {
           <AiOutlinePlus />
         </button>
       </div>
+      {successMessage && (
+        <div className="bg-green-500 text-white py-2 px-4 rounded my-2">
+          {successMessage}
+        </div>
+      )}
       <div className="mt-3 font-medium text-sm">
         <button className="flex items-center bg-[#f6f8f8] border-gray-200 border px-5 py-1 rounded">
           <span>Filter</span>
           <IoIosArrowForward />
         </button>
       </div>
-      <div className="my-4">
+      <div className="my-4 relative">
         <table className="w-full">
           <thead className="text-xs font-medium font-poppins">
             <tr>
               <th className="px-2">
-                <input className="h-3 w-3" type="checkbox"></input>
+                <input
+                  className="h-3 w-3"
+                  checked={selectAll}
+                  type="checkbox"
+                  onChange={handleSelectAllChange}
+                ></input>
               </th>
               <th className="font-semibold py-3 pl-3 text-left w-[6rem]">
                 Photo
@@ -101,10 +157,20 @@ function Customers() {
               data.map((customer: ICustomer) => (
                 <tr
                   key={customer.customerId}
-                  className="border-b-4 border-[#fbfcfc] relative"
+                  className={`${
+                    selectedCustomers.includes(customer.customerId)
+                      ? "bg-slate-100"
+                      : "bg-white"
+                  } border-b-4 border-[#fbfcfc]`}
                 >
                   <td className="text-center">
-                    <input className="h-3 w-3 px-2" type="checkbox"></input>
+                    <input
+                      className="h-3 w-3 px-2"
+                      type="checkbox"
+                      value={customer.customerId}
+                      checked={selectedCustomers.includes(customer.customerId)}
+                      onChange={handleCheckboxChange}
+                    ></input>
                   </td>
                   <td className="pl-3 py-3">
                     <img
@@ -169,8 +235,11 @@ function Customers() {
                       </svg>
                     </button>
                     {isMenuOpen && customer.customerId === activeItemId && (
-                      <div className="absolute right-6 z-50">
-                        <ItemWithMenu item={null} handleDelete={null}/>
+                      <div className="absolute right-6 z-10">
+                        <ItemWithMenu
+                          itemId={customer.customerId}
+                          handleDelete={(id: any) => handleDelete(id)}
+                        />
                       </div>
                     )}
                   </td>
@@ -178,6 +247,18 @@ function Customers() {
               ))}
           </tbody>
         </table>
+        {selectedCustomers.length > 0 && (
+          <div className="rounded-lg bg-white font-poppins text-sm absolute right-1/2 bottom-1 translate-x-1/2 border px-2 py-1 flex gap-2">
+            <div className="flex border-r pr-5 py-1 items-center gap-1">
+              <IoCheckboxOutline className="h-5 w-5 text-orange-500" />
+              <p>{`${selectedCustomers.length} Items`}</p>
+            </div>
+            <button className="hover:bg-gray-200 flex gap-1 items-center rounded-md px-2">
+              <AiOutlineDelete className="h-4 w-4" />
+              <span>Remove</span>
+            </button>
+          </div>
+        )}
       </div>
       <div className="flex justify-between font-poppins text-sm">
         <button

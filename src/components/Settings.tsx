@@ -36,7 +36,10 @@ function Settings() {
   const handlePassword = async (e:any) => {
     e.preventDefault();
     if(confirmPassword && newPassword === confirmPassword) {
-      const result = await axios.put(`http://localhost:3000/users/${user.userId}`, {password: newPassword, currentPassword})
+      const result = await axios.put(
+        `http://localhost:3000/users/${user.userId}`,
+        { password: newPassword, currentPassword }
+      );
       if(result.data){
          dispatch(logout());
          navigate("/login");
@@ -68,7 +71,10 @@ function Settings() {
         updatedUser.profilePicture = url;
       }
 
-      const result = await axios.put(`http://localhost:3000/users/${user.userId}`, updatedUser);
+      const result = await axios.put(
+        `http://localhost:3000/users/${user.userId}`,
+        updatedUser
+      );
       if(result) {
         dispatch(logout());
         navigate("/login");

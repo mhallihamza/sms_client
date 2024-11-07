@@ -65,8 +65,12 @@ const AppointmentForm = ({ showForm, setShowForm, refetch }: { showForm: boolean
   const user = useSelector((state:any) => state.user) as any;
   const { data: customers }: {data : ICustomer[]} = useFetch(`http://localhost:3000/customers/${user.userId}`)
   const { data: services }: {data : any[]} = useFetch(`http://localhost:3000/services/${user.userId}`)
-  const { data: staff }: {data : any[]} = useFetch(`http://localhost:3000/staff/${user.userId}`)
-  const { data: treatments }: {data : any[]} = useFetch(`http://localhost:3000/treatments/${user.userId}`)
+  const { data: staff }: { data: any[] } = useFetch(
+    `http://localhost:3000/staff/${user.userId}`
+  );
+  const { data: treatments }: { data: any[] } = useFetch(
+    `http://localhost:3000/treatments/${user.userId}`
+  );
   const [value, setValue] = useState<Dayjs | null>(dayjs());
   const handleChange = (e: any) => {
     setAppointment(prev => ({

@@ -118,7 +118,7 @@ function Calendar() {
                   </div>
                 </div>
               ))}
-              {appointments
+              {appointments.filter(el => el.appointmentDate === (new Date()).toISOString().split("T")[0])
                 .filter((event) => event.staffId === el.staffId)
                 .map((event) => (
                   <div

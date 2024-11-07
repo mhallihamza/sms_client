@@ -7,7 +7,9 @@ import { MdMiscellaneousServices } from "react-icons/md";
 
 function Overview() {
     const user = useSelector((state:any) => state.user);
-    const { data: customers }: {data : any} = useFetch(`http://localhost:3000/customers/${user.userId}`);
+    const { data: customers }: { data: any } = useFetch(
+      `http://localhost:3000/customers/${user.userId}`
+    );
     const { data: appointments }: { data: any } = useFetch(
       `http://localhost:3000/appointments/${user.userId}`
     );
