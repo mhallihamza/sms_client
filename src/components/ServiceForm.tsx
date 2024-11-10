@@ -49,8 +49,7 @@ const ServiceForm = ({ showForm, setShowForm, refetch }: { showForm: boolean, se
         service.image =  url;
         service.userId = user.userId;
 
-        const result = await axios.post(
-          "http://localhost:3000/services",
+        const result = await axios.post(`${import.meta.env.VITE_API_URL}/services`,
           service
         );
         if(result) refetch()

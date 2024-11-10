@@ -69,7 +69,7 @@ const CustomerForm = ({ showForm, setShowForm, refetch }: { showForm: boolean, s
         customer.profilePicture =  url;
        }
 
-        const result = await axios.post("http://localhost:3000/customers", {
+        const result = await axios.post(`${import.meta.env.VITE_API_URL}/customers`, {
           firstName: customer.firstName,
           lastName: customer.lastName,
           email: customer.email,

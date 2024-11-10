@@ -25,10 +25,10 @@ function Treatments() {
   const [activeItemId, setActiveItemId] = useState<any>(null);
   const [successMessage, setSuccessMessage] = useState("");
   const { data: services }: { data: any[] } = useFetch(
-    `http://localhost:3000/services/${user.userId}`
+    `${import.meta.env.VITE_API_URL}/services/${user.userId}`
   );
   const { data: treatments, refetch }: { data: ITreatment[]; refetch: any } =
-    useFetch(`http://localhost:3000/treatments/${user.userId}`);
+    useFetch(`${import.meta.env.VITE_API_URL}/treatments/${user.userId}`);
 
   useEffect(() => {
     if (showForm) {
@@ -50,7 +50,7 @@ function Treatments() {
   };
   const handleDelete = async (id: string) => {
     const result = await axios.delete(
-      `http://localhost:3000/treatments/${id}`
+      `${import.meta.env.VITE_API_URL}/treatments/${id}`
     );
     if (result.data) {
       setIsMenuOpen((prev: any) => !prev);

@@ -24,7 +24,7 @@ function Services() {
   const [activeItemId, setActiveItemId] = useState<any>(null);
   const [successMessage, setSuccessMessage] = useState("");
   const { data, refetch }: { data: IService[]; refetch: any } = useFetch(
-    `http://localhost:3000/services/${user.userId}`
+    `${import.meta.env.VITE_API_URL}/services/${user.userId}`
   );
   console.log(data);
   useEffect(() => {
@@ -46,7 +46,9 @@ function Services() {
     setIsMenuOpen((prev: any) => !prev);
   };
   const handleDelete = async (id: string) => {
-    const result = await axios.delete(`http://localhost:3000/services/${id}`);
+    const result = await axios.delete(
+      `${import.meta.env.VITE_API_URL}/services/${id}`
+    );
     if (result.data) {
       setIsMenuOpen((prev: any) => !prev);
       refetch();

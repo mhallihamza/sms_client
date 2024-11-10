@@ -28,7 +28,7 @@ const TreatmentForm = ({ showForm, setShowForm, refetch }: { showForm: boolean, 
   const [file, setFile] = useState<any>(null);
   const user = useSelector((state:any) => state.user) as any;
   const { data: services }: { data: any[] } = useFetch(
-    `http://localhost:3000/services/${user.userId}`
+    `${import.meta.env.VITE_API_URL}/services/${user.userId}`
   );
   const [formValid, setFormValid] = useState(false);
   const checkFormValidity = () => {
@@ -72,7 +72,7 @@ const TreatmentForm = ({ showForm, setShowForm, refetch }: { showForm: boolean, 
         treatment.image =  url;
        }
 
-        const result = await axios.post("http://localhost:3000/treatments", {
+        const result = await axios.post(`${import.meta.env.VITE_API_URL}/treatments`, {
           name: treatment.name,
           description: treatment.description,
           image: treatment.image,

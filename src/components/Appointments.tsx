@@ -31,12 +31,14 @@ function Appointments() {
     return time.split(':').slice(0, 2).join(':');
   }
   const { data: appointments, refetch }: { data: any[]; refetch: any } =
-    useFetch(`http://localhost:3000/appointments/details/${user.userId}`);
+    useFetch(
+      `${import.meta.env.VITE_API_URL}/appointments/details/${user.userId}`
+    );
   const { data: staff }: { data: any[] } = useFetch(
-    `http://localhost:3000/staff/${user.userId}`
+    `${import.meta.env.VITE_API_URL}/staff/${user.userId}`
   );
   const { data: services }: { data: any[] } = useFetch(
-    `http://localhost:3000/services/${user.userId}`
+    `${import.meta.env.VITE_API_URL}/services/${user.userId}`
   );
   useEffect(() => {
     if (showForm) {
@@ -94,7 +96,7 @@ function Appointments() {
   };
   const handleDelete = async (id:string) => {
     const result = await axios.delete(
-      `http://localhost:3000/appointments/${id}`
+      `${import.meta.env.VITE_API_URL}/appointments/${id}`
     );
     if(result.data) {
       setIsMenuOpen((prev: any) => !prev);

@@ -8,16 +8,16 @@ import { MdMiscellaneousServices } from "react-icons/md";
 function Overview() {
     const user = useSelector((state:any) => state.user);
     const { data: customers }: { data: any } = useFetch(
-      `http://localhost:3000/customers/${user.userId}`
+      `${import.meta.env.VITE_API_URL}/customers/${user.userId}`
     );
     const { data: appointments }: { data: any } = useFetch(
-      `http://localhost:3000/appointments/${user.userId}`
+      `${import.meta.env.VITE_API_URL}/appointments/${user.userId}`
     );
     const { data: services }: { data: any } = useFetch(
-      `http://localhost:3000/services/${user.userId}`
+      `${import.meta.env.VITE_API_URL}/services/${user.userId}`
     );
     const { data: treatments }: { data: any } = useFetch(
-      `http://localhost:3000/treatments/${user.userId}`
+      `${import.meta.env.VITE_API_URL}/treatments/${user.userId}`
     );
   return (
     <div>

@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 function Calendar() {
   const user = useSelector((state: any) => state.user);
   const { data: appointments }: { data: any[] } = useFetch(
-    `http://localhost:3000/appointments/details/${user.userId}`
+    `${import.meta.env.VITE_API_URL}/appointments/details/${user.userId}`
   );
   const staff = appointments.reduce((acc, el) => {
     const staffId = el.staff.staffId;

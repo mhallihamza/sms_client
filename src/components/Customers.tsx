@@ -34,7 +34,7 @@ function Customers() {
   const numbers = 10;
   const [currentPage, setCurrentPage] = useState<number>(1);
   const { data, refetch }: { data: ICustomer[]; refetch: any } = useFetch(
-    `http://localhost:3000/customers/${user.userId}`
+    `${import.meta.env.VITE_API_URL}/customers/${user.userId}`
   );
   useEffect(() => {
 
@@ -96,7 +96,9 @@ function Customers() {
     }
   };
   const handleDelete = async (id:string) => {
-    const result = await axios.delete(`http://localhost:3000/customers/${id}`);
+    const result = await axios.delete(
+      `${import.meta.env.VITE_API_URL}/customers/${id}`
+    );
     if(result.data) {
       setIsMenuOpen((prev: any) => !prev);
       refetch();

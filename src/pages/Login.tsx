@@ -25,8 +25,7 @@ function Login() {
       console.log(password);
       try {
         dispatch(loginStart())
-      const { data: user } = await axios.post(
-        "http://localhost:3000/auth/login",
+      const { data: user } = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`,
         {
           email,
           password,

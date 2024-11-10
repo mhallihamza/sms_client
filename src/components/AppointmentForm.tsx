@@ -63,13 +63,17 @@ const AppointmentForm = ({ showForm, setShowForm, refetch }: { showForm: boolean
     userId: ''
   });
   const user = useSelector((state:any) => state.user) as any;
-  const { data: customers }: {data : ICustomer[]} = useFetch(`http://localhost:3000/customers/${user.userId}`)
-  const { data: services }: {data : any[]} = useFetch(`http://localhost:3000/services/${user.userId}`)
+  const { data: customers }: { data: ICustomer[] } = useFetch(
+    `${import.meta.env.VITE_API_URL}/customers/${user.userId}`
+  );
+  const { data: services }: { data: any[] } = useFetch(
+    `${import.meta.env.VITE_API_URL}/services/${user.userId}`
+  );
   const { data: staff }: { data: any[] } = useFetch(
-    `http://localhost:3000/staff/${user.userId}`
+    `${import.meta.env.VITE_API_URL}/staff/${user.userId}`
   );
   const { data: treatments }: { data: any[] } = useFetch(
-    `http://localhost:3000/treatments/${user.userId}`
+    `${import.meta.env.VITE_API_URL}/treatments/${user.userId}`
   );
   const [value, setValue] = useState<Dayjs | null>(dayjs());
   const handleChange = (e: any) => {
@@ -82,7 +86,7 @@ const AppointmentForm = ({ showForm, setShowForm, refetch }: { showForm: boolean
     if(value) appointment.appointmentDate = value.toISOString();
     try {
         appointment
-        const result = await axios.post("http://localhost:3000/appointments",{
+        const result = await axios.post(`${import.meta.env.VITE_API_URL}/appointments`,{
           ...appointment, userId: user.userId
         })
         if(result) refetch()

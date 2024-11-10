@@ -21,7 +21,7 @@ const CustomTick = ({ x, y, payload }: any) => {
 function ServiceChart() {
   const user = useSelector((state: any) => state.user);
   const { data: appointments }: { data: any[] } = useFetch(
-    `http://localhost:3000/appointments/details/${user.userId}`
+    `${import.meta.env.VITE_API_URL}/appointments/details/${user.userId}`
   );
 
   const result = appointments.reduce((acc, appointment) => {

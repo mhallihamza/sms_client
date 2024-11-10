@@ -26,7 +26,7 @@ function DaySchedule() {
   //filter(el => el.appointmentDate === (new Date()).toISOString.split("T"))
   const user = useSelector((state: any) => state.user);
   const { data: appointments }: { data: any[] } = useFetch(
-    `http://localhost:3000/appointments/details/${user.userId}`
+    `${import.meta.env.VITE_API_URL}/appointments/details/${user.userId}`
   );
   const newAppointments = appointments
     .filter((el:any) => el.appointmentDate === (new Date()).toISOString().slice(0,10))

@@ -5,8 +5,12 @@ import useFetch from "../hooks/useFetch"
 function UpcomingAppointments() {
   const  user  = useSelector((state:any) => state.user);
     const [selectedDate, setSelectedDate] = useState(new Date());
-  let {data: appointments}: {data: any[]} = useFetch(`http://localhost:3000/appointments/details/${user.userId}`)
-  const {data: treatments}: {data: any[]} = useFetch(`http://localhost:3000/treatments/${user.userId}`)
+  let { data: appointments }: { data: any[] } = useFetch(
+    `${import.meta.env.VITE_API_URL}/appointments/details/${user.userId}`
+  );
+  const { data: treatments }: { data: any[] } = useFetch(
+    `${import.meta.env.VITE_API_URL}/treatments/${user.userId}`
+  );
   appointments = appointments.filter(
     (appointment) =>
       appointment.appointmentDate === selectedDate.toISOString().split("T")[0]

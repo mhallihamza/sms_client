@@ -34,7 +34,7 @@ function Staff() {
   const numbers = 10;
   const [currentPage, setCurrentPage] = useState<number>(1);
   const { data, refetch }: { data: IStaff[]; refetch: any } = useFetch(
-    `http://localhost:3000/staff/${user.userId}`
+    `${import.meta.env.VITE_API_URL}/staff/${user.userId}`
   );
   console.log(data);
   useEffect(() => {
@@ -96,7 +96,9 @@ function Staff() {
     }
   };
   const handleDelete = async (id: string) => {
-    const result = await axios.delete(`http://localhost:3000/staff/${id}`);
+    const result = await axios.delete(
+      `${import.meta.env.VITE_API_URL}/staff/${id}`
+    );
     if (result.data) {
       setIsMenuOpen((prev: any) => !prev);
       refetch();

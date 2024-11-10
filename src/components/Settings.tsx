@@ -37,7 +37,7 @@ function Settings() {
     e.preventDefault();
     if(confirmPassword && newPassword === confirmPassword) {
       const result = await axios.put(
-        `http://localhost:3000/users/${user.userId}`,
+        `${import.meta.env.VITE_API_URL}/users/${user.userId}`,
         { password: newPassword, currentPassword }
       );
       if(result.data){
@@ -72,7 +72,7 @@ function Settings() {
       }
 
       const result = await axios.put(
-        `http://localhost:3000/users/${user.userId}`,
+        `${import.meta.env.VITE_API_URL}/users/${user.userId}`,
         updatedUser
       );
       if(result) {
